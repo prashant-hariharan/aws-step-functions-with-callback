@@ -27,22 +27,24 @@ module.exports.double = async (event, context, callback) => {
     },
   };
 
-  if (output >= 500) {
-    const error = new NumberIsTooBig(output);
+  if (tasktoken) {
+    if (output >= 500) {
+      const error = new NumberIsTooBig(output);
+      await stepFunctions
+        .sendTaskFailure({
+          taskToken: tasktoken,
+          error: JSON.stringify(error),
+        })
+        .promise();
+    }
+
     await stepFunctions
-      .sendTaskFailure({
+      .sendTaskSuccess({
         taskToken: tasktoken,
-        error: JSON.stringify(error),
+        output: JSON.stringify(response),
       })
       .promise();
   }
-
-  await stepFunctions
-    .sendTaskSuccess({
-      taskToken: tasktoken,
-      output: JSON.stringify(response),
-    })
-    .promise();
 
   return response;
 };
