@@ -31,5 +31,7 @@ If you are working on an existing project
     "x": 125,
     "y": 124
     } 
-    
+
+- Navigate to your AWS console (UI), and check the execution of your Step function by searching for the Step function service.
+  The logs for the execution will be available as a logstream in cloud watch.
 
