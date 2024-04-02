@@ -1,0 +1,21 @@
+service: lambda-api-gateway
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - states:SendTaskSuccess
+        - states:SendTaskFailure
+      Resource: '*'
+
+functions:
+  double-custom-api:
+    handler: handler.double
+    events:
+      - http:
+          path: /
+          method: POST

@@ -1,0 +1,76 @@
+service: chaining-step-functions
+
+frameworkVersion: '3'
+
+plugins:
+  - serverless-step-functions
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+
+functions:
+  add:
+    handler: handler.add
+  double:
+    handler: handler.double
+    environment: ${file(env.json)}
+
+stepFunctions:
+  stateMachines:
+    simple-maths:
+      events:
+        - http:
+            path: /
+            method: POST
+      name: simple-maths
+      definition:
+        Comment: Demo for Function Chaining
+        StartAt: IsInputValid
+
+        States:
+          IsInputValid:
+            Type: Choice
+            Choices:
+              - Or:
+                  - Variable: $.x
+                    IsNumeric: false
+                  - Variable: $.y
+                    IsNumeric: false
+                Next: DefaultResponse
+            Default: Add
+
+          Add:
+            Type: Task
+            Resource:
+              Fn::GetAtt: [add, Arn]
+            Next: Double
+            Retry:
+              - ErrorEquals: [States.ALL]
+                MaxAttempts: 2
+
+          Double:
+            Type: Task
+            Resource: arn:aws:states:::lambda:invoke.waitForTaskToken
+            Parameters:
+              FunctionName:
+                Ref: double
+              Payload:
+                'number.$': '$'
+                'token.$': '$$.Task.Token'
+            End: true
+            Retry:
+              - ErrorEquals: [NumberIsTooBig]
+                MaxAttempts: 0
+              - ErrorEquals: [States.ALL]
+                MaxAttempts: 2
+            Catch:
+              - ErrorEquals: [NumberIsTooBig]
+                Next: DefaultResponse
+              - ErrorEquals: [States.ALL]
+                Next: DefaultResponse
+
+          DefaultResponse:
+            Type: Pass
+            Result: Error evaluating number
+            End: true
