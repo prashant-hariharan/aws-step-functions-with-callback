@@ -34,4 +34,12 @@ If you are working on an existing project
 
 - Navigate to your AWS console (UI), and check the execution of your Step function by searching for the Step function service.
   The logs for the execution will be available as a logstream in cloud watch.
+# Pricing
+The pricing will be based on the costs for following resources:
 
+- S3 bucket - the source code will be placed on S3 buckets. (storage costs)
+- Cost of invocation for the underlying lambda functions
+- Cost of state transitions for the step functions
+
+  
+The following link should give you a rough estimation of the costs: https://calculator.aws/#/createCalculator/StepFunctions
