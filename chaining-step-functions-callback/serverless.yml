@@ -48,6 +48,7 @@ stepFunctions:
             Retry:
               - ErrorEquals: [States.ALL]
                 MaxAttempts: 2
+            TimeoutSeconds: 60
 
           Double:
             Type: Task
@@ -58,6 +59,8 @@ stepFunctions:
               Payload:
                 'number.$': '$'
                 'token.$': '$$.Task.Token'
+            TimeoutSeconds: 60
+            HeartbeatSeconds: 30
             End: true
             Retry:
               - ErrorEquals: [NumberIsTooBig]
