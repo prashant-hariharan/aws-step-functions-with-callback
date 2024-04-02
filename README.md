@@ -9,7 +9,7 @@ execute following commands:
 # Project specific commands
 If you are creating serverless projects from scratch, the following commands are useful:
 
-  - serverless create --template aws-nodejs --path <name of the project>   (This will create a new serverless project)
+  - serverless create --template aws-nodejs --path <name>   (This will create a new serverless project)
   - npm init -y    (This will initialize the nodejs project)
   - npm install --save-dev serverless-step-functions   (This will add a dev dependency for step functions plugin)
 
