@@ -1,0 +1,27 @@
+service: lambda-approval
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - states:SendTaskSuccess
+        - states:SendTaskFailure
+      Resource: '*'
+
+functions:
+  approval-api:
+    handler: handler.approve
+    events:
+      - http:
+          path: /approve
+          method: POST
+  rejection-api:
+    handler: handler.reject
+    events:
+      - http:
+          path: /reject
+          method: POST

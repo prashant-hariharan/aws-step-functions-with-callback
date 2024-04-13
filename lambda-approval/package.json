@@ -1,5 +1,5 @@
 {
-  "name": "lambda-api-gateway",
+  "name": "lambda-approval",
   "version": "1.0.0",
   "description": "",
   "main": "handler.js",
@@ -9,6 +9,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "devDependencies": {
+    "serverless-step-functions": "^3.21.0"
+  },
   "dependencies": {
     "aws-sdk": "^2.1599.0"
   }

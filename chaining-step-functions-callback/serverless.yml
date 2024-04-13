@@ -10,11 +10,14 @@ provider:
   runtime: nodejs18.x
 
 functions:
-  add:
-    handler: handler.add
-  double:
-    handler: handler.double
+  calculate:
+    handler: handler.calculate
     environment: ${file(env.json)}
+  approval:
+    handler: handler.approval
+    environment: ${file(env.json)}
+  finalize:
+    handler: handler.finalize
 
 stepFunctions:
   stateMachines:
@@ -38,30 +41,18 @@ stepFunctions:
                   - Variable: $.y
                     IsNumeric: false
                 Next: DefaultResponse
-            Default: Add
+            Default: Calculate
 
-          Add:
-            Type: Task
-            Resource:
-              Fn::GetAtt: [add, Arn]
-            Next: Double
-            Retry:
-              - ErrorEquals: [States.ALL]
-                MaxAttempts: 2
-            TimeoutSeconds: 60
-
-          Double:
+          Calculate:
             Type: Task
             Resource: arn:aws:states:::lambda:invoke.waitForTaskToken
             Parameters:
               FunctionName:
-                Ref: double
+                Ref: calculate
               Payload:
                 'number.$': '$'
                 'token.$': '$$.Task.Token'
-            TimeoutSeconds: 60
-            HeartbeatSeconds: 30
-            End: true
+            Next: Approval
             Retry:
               - ErrorEquals: [NumberIsTooBig]
                 MaxAttempts: 0
@@ -72,8 +63,31 @@ stepFunctions:
                 Next: DefaultResponse
               - ErrorEquals: [States.ALL]
                 Next: DefaultResponse
+            TimeoutSeconds: 60
+            HeartbeatSeconds: 30
+
+          Approval:
+            Type: Task
+            Resource: arn:aws:states:::lambda:invoke.waitForTaskToken
+            Parameters:
+              FunctionName:
+                Ref: approval
+              Payload:
+                'number.$': '$'
+                'token.$': '$$.Task.Token'
+            TimeoutSeconds: 600
+            Next: Finalize
+            Catch:
+              - ErrorEquals: [States.ALL]
+                Next: DefaultResponse
+
+          Finalize:
+            Type: Task
+            Resource:
+              Fn::GetAtt: [finalize, Arn]
+            End: true
 
           DefaultResponse:
             Type: Pass
-            Result: Error evaluating number
+            Result: Error evaluating Task
             End: true
