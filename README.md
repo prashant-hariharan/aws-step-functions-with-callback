@@ -20,9 +20,12 @@ If you are working on an existing project
 # Steps to run the example
   - Navigate to the lambda-api-gateway project and execute the command **serverless deploy**.
     This will deploy the lambda function and expose an API gateway. Kindly note down the URL of the api gateway as we need to invoke this from the step function
+	
+  - Navigate to the lambda-approval project and execute the command **serverless deploy**.
+    This will deploy the lambda function and expose an API gateway with paths to approve and reject task. Kindly note down the URL of the api gateway as we need to invoke this from Postman.
 
   - Navigate to the chaining-step-functions-callback project.
-    Update the env.json with the url of the api gateway from previous step.
+    Update the env.json with the url of the api gateway from lambda-api-gateway step.
     Execute the command **serverless deploy**.
     Kindly note down the URL of the api gateway generated from this step.
 
