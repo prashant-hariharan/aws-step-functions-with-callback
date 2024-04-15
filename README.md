@@ -18,8 +18,10 @@ If you are creating serverless projects from scratch, the following commands are
 - npm init -y (This will initialize the nodejs project)
 - npm install --save-dev serverless-step-functions (This will add a dev dependency for step functions plugin)
 
-If you are working on an existing project
+If you are working on an existing project, run the following commands on each sub projects (lambda-approval,
+lambda-api-gateway,chaining-step-functions-callback)
 
+- npm install 
 - serverless deploy (this will deploy the project on to aws)
 - serverless remove (this will delete the created artefacts from AWS)
 
