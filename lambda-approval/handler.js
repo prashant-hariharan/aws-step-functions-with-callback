@@ -8,22 +8,37 @@ module.exports.approve = async (event, context, callback) => {
 
   console.log('taskToken ' + tasktoken);
 
-  const response = {
-    statusCode: 200,
-    body: { approved: true },
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-    },
+  const output = {
+    approved: 'true',
   };
 
-  await stepFunctions
-    .sendTaskSuccess({
-      taskToken: tasktoken,
-      output: JSON.stringify(response),
-    })
-    .promise();
+  const response = {
+    statusCode: 200,
+    body: JSON.stringify(output),
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Content-Type': 'application/json',
+    },
+  };
+  try {
+    await stepFunctions
+      .sendTaskSuccess({
+        taskToken: tasktoken,
+        output: JSON.stringify(output),
+      })
+      .promise();
+    console.log('Task Success sent to Step function ');
 
-  return response;
+    console.log('Sending response to Lambda');
+
+    return response;
+  } catch (err) {
+    console.error('Failed to send task success:', err);
+    return {
+      statusCode: 500,
+      body: JSON.stringify(`Failed to send task success: ${err}`),
+    };
+  }
 };
 
 module.exports.reject = async (event, context, callback) => {
@@ -34,20 +49,37 @@ module.exports.reject = async (event, context, callback) => {
   console.log('requestBody ' + number);
   console.log('taskToken ' + tasktoken);
 
+  const output = {
+    approved: 'false',
+  };
+
   const response = {
     statusCode: 200,
-    body: { approved: false },
+    body: JSON.stringify(output),
     headers: {
       'Access-Control-Allow-Origin': '*',
+      'Content-Type': 'application/json',
     },
   };
 
-  await stepFunctions
-    .sendTaskSuccess({
-      taskToken: tasktoken,
-      output: JSON.stringify(response),
-    })
-    .promise();
+  try {
+    await stepFunctions
+      .sendTaskSuccess({
+        taskToken: tasktoken,
+        output: JSON.stringify(output),
+      })
+      .promise();
 
-  return response;
+    console.log('Task Failure sent to Step function ');
+
+    console.log('Sending response to Lambda');
+
+    return response;
+  } catch (err) {
+    console.error('Failed to send task success:', err);
+    return {
+      statusCode: 500,
+      body: JSON.stringify(`Failed to send task success: ${err}`),
+    };
+  }
 };

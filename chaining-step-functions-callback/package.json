@@ -13,6 +13,7 @@
     "serverless-step-functions": "^3.21.0"
   },
   "dependencies": {
+    "aws-sdk": "^2.1599.0",
     "axios": "^1.6.8"
   }
 }

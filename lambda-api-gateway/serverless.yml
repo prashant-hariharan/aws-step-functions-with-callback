@@ -17,5 +17,5 @@ functions:
     handler: handler.double
     events:
       - http:
-          path: /
+          path: /double
           method: POST
