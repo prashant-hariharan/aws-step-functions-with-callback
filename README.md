@@ -21,6 +21,7 @@ If you are creating serverless projects from scratch, the following commands are
 If you are working on an existing project, run the following commands on each sub projects (lambda-approval,
 lambda-api-gateway,chaining-step-functions-callback)
 
+- npm install --save-dev serverless-step-functions
 - npm install 
 - serverless deploy (this will deploy the project on to aws)
 - serverless remove (this will delete the created artefacts from AWS)
